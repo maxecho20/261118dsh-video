@@ -1,0 +1,27 @@
+# Node
+node_modules/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# 私密源素材（真人口播 / 产品动画 / 音乐，不随公开仓库分发）
+素材/
+
+# Remotion 渲染缓存
+runs/
+dist/
+
+# 运行时产物
+input/raw_video.mp4
+workspace_data/*.json
+public/rough_cut.mp4
+public/aligned_captions.json
+out/*.mp4
+
+# 日志
+*.log
+
+# macOS
+.DS_Store

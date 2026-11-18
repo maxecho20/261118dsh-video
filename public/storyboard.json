@@ -1,0 +1,20 @@
+{
+  "video_title": "AI视频自动化全流程",
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "segments": [
+    {
+      "segment_id": 1,
+      "match_text": "今天教大家用5个Skill实现AI做视频全流程",
+      "shot_type": "A-roll_zoom_hook",
+      "camera_scale": [1.0, 1.15],
+      "b_roll_asset": null,
+      "info_card": {
+        "title": "5个Skill全自动剪辑",
+        "subtitle": "告别手拉时间线"
+      },
+      "highlight_keywords": ["5个Skill", "全流程"]
+    }
+  ]
+}
