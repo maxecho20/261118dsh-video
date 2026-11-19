@@ -1,6 +1,10 @@
 # 安装 AI 视频工作流 Skill
 
-把整个 `ai-video-workflow` 目录复制至当前 Hermes profile 的 skills 目录，或设置 `skills.external_dirs` 指向它的父目录。打开新会话后调用 `/ai-video-workflow`。Hermes 中预先选好 DeepSeek，凭据由正常模型设置管理。
+把整个 `ai-video-workflow` 目录复制至当前 Hermes profile 的 skills 目录，或设置 `skills.external_dirs` 指向它的父目录。打开新会话后调用 `/ai-video-workflow`。在 Codex 等编程 Agent 中也可以直接让它读本技能的 SKILL.md 和目标案例文档。具体模型在宿主配置中选择。
+
+## ZIP 短样
+
+在解压目录的 `runtime/` 中运行 `npm ci`，再运行 `python3 scripts/repro_demo.py talk`。将 talk 换成 product 或 mv 可以运行另外两案的合成短样。读者提示词在 `runtime/cases/`。
 
 ## 本地依赖
 

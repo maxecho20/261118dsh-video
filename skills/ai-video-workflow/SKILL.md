@@ -1,7 +1,7 @@
 ---
 name: ai-video-workflow
-description: 用 Hermes 把真人口播、产品动画或音乐 MV 做成可编辑工程和可播放视频。根据素材选择转写剪辑、资料驱动动效或音频节拍驱动流程，留存可复核产物。
-version: 0.1.0
+description: 用编程 Agent 把真人口播、产品动画或音乐 MV 做成可编辑工程和可播放视频。根据素材选择转写剪辑、资料驱动动效或音频节拍驱动流程，留存可复核产物。
+version: 0.2.0
 metadata:
   hermes:
     category: creative

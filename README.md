@@ -1,31 +1,45 @@
-# 用 DeepSeek 和 Hermes Agent 复现 AI 视频工作流
+# AI 视频工作流｜卡尔的 AI 沃茨
 
-项目编号 C-20261118-01｜2026-11-18｜执行目录 `261118 AI视频dsh`。
+一套可在本地复刻的 AI 视频制作流程，包含真人口播、产品动画和音乐 MV 三个案例。有三份能直接复制给编程 Agent 的提示词，也有三个用合成素材跑通的短样。
 
-按[沟通纪要与逐字记录](https://feishu.doubao.com/docx/TAE7d4qdjo7d51x21iNcThLcnzg)及用户本轮确认推进。借用[已有飞书大纲](https://ycn8ajgnopya.feishu.cn/wiki/EiKYwRUXkiiYHfkrFqHctgKjnjb)的五阶段交接，沿用本地 Whisper、FFmpeg 和 Remotion 工程。运行口径为 **Hermes Agent 接 DeepSeek 模型**。先核对可用于文章首屏的黄金片段，再跑三个案例，随后写飞书图文稿，最后依据实际产物出「字幕｜画面｜备注」视频脚本。周五是沟通中的目标日期。
+[三案复刻与提示词](cases/README.md) · [项目复盘](docs/项目复盘.md) · [版本与下载](https://github.com/maxecho20/261118dsh-video/releases/latest)
 
-## 三个案例
+## 先出一支片
 
-| 案例 | 输入与任务 | 过片条件 |
-| --- | --- | --- |
-| [01 真人口播](cases/01-真人口播.md) | 已收到真人 A-roll、B-roll 和前两分钟脚本，现成一分钟片用于对照 | 开头 8–12 秒先过片，完整执行覆盖原脚本约两分钟。检查内容删留、实际 B-roll、字幕与声音 |
-| [02 产品动画](cases/02-苹果产品进化.md) | 《从鼠标到手势》致敬 Apple 50 年，40–60 秒、16:9、无旁白、原创音乐。模型自主找产品参照、挑视觉形式 | 前十秒用鼠标、滚轮和触屏讲清题眼，动作与音乐对齐。完整片五个节点逐条可溯，源工程可修改 |
-| [03 音乐 MV](cases/03-音乐MV.md) | 按两条抖音的卡点与角色一致性借鉴，做原创小鲸角色短片。以实际音轨驱动 | 一段完整 2D 或 3D 动作，实际听拍并复核偏差。3D 声明有可改源场景和多角度画面支撑 |
-
-## 技能包与调用
-
-本项目维护一项技能 `ai-video-workflow`，内含参考流程、路由、逐字稿→粗剪→渲染的可执行脚本及音频分析脚本。 [技能入口](skills/ai-video-workflow/SKILL.md) · [执行规则](skills/ai-video-workflow/references/workflow.md)
-
-技能开局先跑 `scripts/env_check.py` 做环境预检，自动探测 faster-whisper / FFmpeg / Node / librosa 并按系统给出安装命令，必需依赖缺失会停下等你补齐——不同电脑、不同配置都能对齐环境。
-
-打包产物 `dist/ai-video-workflow-v0.1.0.zip` 只含公开可复用的技能文件及运行模板。解压后将整个 `ai-video-workflow` 目录放到当前 Hermes profile 的 skills 目录，或在 Hermes 的 `skills.external_dirs` 指向它的父目录。新会话用 `/ai-video-workflow`，也可用官方模型配置和 CLI 预加载。 [Hermes Skills 指南](https://hermes-agent.nousresearch.com/docs/guides/work-with-skills) · [DeepSeek Hermes 接入](https://api-docs.deepseek.com/quick_start/agent_integrations/hermes/)
+需要 Node.js、Python 3、FFmpeg。首跑会安装 Node 依赖，Remotion 可能下载渲染用浏览器。下面的短样只用本地合成素材和音轨，不需要模型密钥。请在仓库根目录执行。
 
 ```sh
-hermes chat --provider deepseek --model deepseek-v4-pro --skills ai-video-workflow
+git clone https://github.com/maxecho20/261118dsh-video.git
+cd 261118dsh-video
+npm ci
+python3 scripts/repro_demo.py talk
 ```
 
-一案一条 prompt。例如「用 ai-video-workflow 执行当前项目 cases/01-真人口播.md。先交开场 8–12 秒，回传可播放样片、可编辑工程、剪点表和实际用到的工具。原素材只读，输出保存在 runs/01-口播/hermes-golden-01。」三个案例各自简报内都有完整调用提示。各次运行记模型、版本、素材版本、阶段耗时、实际调用与人工介入。 [本轮验证记录](docs/验证记录.md)
+输出在 `out/demo-talk.mp4`。六秒内能看到主画面、左上角 B-roll 和字幕。样例使用测试画面和合成音轨来验证剪辑与合成。想试另外两类，把最后一条命令的参数换成 `product` 或 `mv`，成片分别是 `out/demo-product.mp4`、`out/demo-mv.mp4`。
 
-## 写稿入口
+试着修改 `examples/index.tsx` 里的字幕，或修改 `examples/mv-plan.json` 里的音乐事件，再跑一次。三个短样均以 960×540、30 fps 输出；完整案例的选段、画幅和成片交付件见各自简报。完整流程前可以检查依赖。短样已在 macOS 验证，Windows 与 Linux 的端到端流程待独立验证。
 
-先取得 Hermes 的真实样片与三案证据，再复用已有文章大纲的三步结构，压缩为「装一个包 → 用同一入口调用 → 三种素材实测」。第一屏放真实黄金片段，正文放口播剪辑、资料到动效、音乐与镜头时间对齐三张案例结果卡。工具清单说明实际使用的实现。短片按公司当期格式附同段 MP4 与 GIF。最终解释依赖、权限、输入和成本，统一汇报首版、返工版与失败点。
+```sh
+python3 skills/ai-video-workflow/scripts/env_check.py
+```
+
+## 用自己的素材
+
+1. 选 [一个案例](cases/README.md)，准备属于你的原始媒体和对应的文字材料。在项目里用独立目录保存输入和输出。
+2. 用 Codex 等编程 Agent 打开仓库，把该案例中「可直接复制的提示词」发给它。请它读取剪辑工作流，先交短样或带声粗样，再完成全片。
+3. 把出片时用的素材、时间表和回听结果一起存下来。字幕和镜头的变化应可在工程中修改、重新渲染。
+
+| 案例 | 输入 | 读者可以复刻的结构 |
+| --- | --- | --- |
+| [01 真人口播](cases/01-真人口播.md) | 一段原声、稿件、若干 B-roll | 真人和角窗开场，跟随讲解插入实例，多画面布局、字幕和剪点表 |
+| [02 产品动画](cases/02-苹果手机进化.md) | 官方来源、产品参照、原创或获准使用的音乐 | 每段一个节点、一项成就、一幅解释其意义的画面 |
+| [03 音乐 MV](cases/03-音乐MV.md) | 可使用的歌、校对歌词、角色与画风 | 同一角色、单行歌词、音乐事件驱动转场，动作和歌词共用时间轴 |
+
+## 技能和工具
+
+- **1 个技能入口，5 个制作阶段。** `ai-video-workflow` 将分镜、转写、粗剪、合成和镜头动效串起来。[SKILL.md](skills/ai-video-workflow/SKILL.md)
+- **现有工具。** faster-whisper 提取口播和候选唱词，FFmpeg 负责粗剪、封装与解码检查，Remotion 根据时间轴绘制。MV 可用 librosa 提取候选拍点，`prepare_mv_timeline.py` 把原曲秒数映射到成片帧号。[音乐 MV 复现指南](docs/歌词剧情MV复现.md)
+- **依案例增加工具。** 实测 iPhone 片用 SceneKit 做三维场景，完整蜡笔 MV 用 Pillow/NumPy 做绘制。Audio Separator、SOFA 和 Beat This! 是音频增强候选，基础复刻入口只需要上面列出的依赖。
+- 技能 ZIP 解压后可将 `ai-video-workflow` 目录添加到支持 Skill 的 Agent 配置。也可以直接让 Agent 读取本仓库的 [SKILL.md](skills/ai-video-workflow/SKILL.md) 和案例文件。ZIP 内的 `runtime/` 提供与仓库相同的短样命令。
+
+公开短样在本机生成。正式实测原片、商品图片、商业歌曲及完整歌词由使用者自行准备。公开短样证明当前项目的合成和时间轴路径可运行，实拍内容校正、画面事实核对、歌词与听感复核仍是各案的验收环节。

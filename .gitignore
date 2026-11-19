@@ -25,3 +25,6 @@ out/*.mp4
 
 # macOS
 .DS_Store
+
+# Locally generated reproduction assets
+public/repro-demo/
